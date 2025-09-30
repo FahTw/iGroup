@@ -14,7 +14,7 @@ export default function RootLayout({
         
         {/* Navbar ใช้ Jua แค่ Logo */}
         <header>
-          {/* <Navbar /> */}
+          <Navbar />
         </header>
 
         {/* Main content */}

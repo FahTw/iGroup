@@ -5,8 +5,6 @@ import Logo from "@/components/Navbar/Logo";
 export default function Home() {
   return (
     <div className="font-sans min-h-screen flex flex-col">
-      {/* Navbar */}
-      <Navbar />
 
       {/* Main content */}
       <main className="flex-1 flex flex-col items-center gap-10 p-8 md:p-28">
