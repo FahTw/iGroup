@@ -21,13 +21,6 @@ export default function RootLayout({
         <main className="flex-1">
           {children}
         </main>
-
-        <footer className="p-4 text-center text-sm text-gray-500 w-full shadow-md">
-          <div className="flex justify-between px-10">
-            <p>Copyright 2025 by iGroup</p>
-            <p>Made by Arm, Chogun, Fah</p>
-          </div>
-        </footer>
       </body>
     </html>
   );

@@ -5,19 +5,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Users } from "lucide-react";
+import { Prompt } from "next/font/google";
 
+const prompt = Prompt({ subsets: ["latin"], weight: "300" });
 
-const HomeCard = () => {
+type CardProps = {
+  title: string
+  description: string
+}
+
+export default function HomeCard({ title = "This is default title", description = "This is default description" }: CardProps) {
   return (
-    <Card className="w-[312px] h-[152px]">
+    <Card className="bg-white shadow-md">
         <CardHeader>
             <div className="flex justify-center items-center gap-2 pb-4 border-b border-gray-300 ">
                 <Users className="w-5 h-5" />
-                <CardTitle className="text-blue-700">Group Creation</CardTitle>
+                <CardTitle className="text-blue-700">{title}</CardTitle>
             </div>
-            <CardDescription className="text-[10px]">ช่วยให้ทุกคนสามารถสร้างกลุ่มโปรเจกต์ได้เองผ่านฟอร์มที่ใช้ง่าย รองรับการระบุชื่อกลุ่ม รายละเอียดกลุ่ม จำนวนสมาชิกสูงสุดและแท็กวิชาที่เกี่ยวข้องเพื่อให้เพื่อนในคณะสามารถค้นหาและเข้าร่วมได้สะดวก</CardDescription>
+            <CardDescription className={`${prompt.className}`}>{description}</CardDescription>
         </CardHeader>
     </Card>
   )
 }
-export default HomeCard

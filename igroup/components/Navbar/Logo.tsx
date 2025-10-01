@@ -4,9 +4,7 @@ const jua = Jua({ subsets: ["latin"], weight: "400" });
 
 const Logo = () => {
   return (
-    <div>
-      <p className={`${jua.className} text-blue-700`}>&lt;i&gt;Group</p>
-    </div>
+    <span className={`${jua.className} text-blue-700`}>&lt;i&gt;Group</span>
   );
 };
 
