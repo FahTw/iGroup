@@ -4,6 +4,7 @@ const page = () => {
   return (
     <div>
         <HeroSection 
+            className="!h-[229px]"
             title="PROFILE"
             subtitle="แก้ไขข้อมูลส่วนตัว"
         />
