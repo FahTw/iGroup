@@ -20,50 +20,50 @@ const LoginCard = () => {
 
   return (
     <div className={inter.className}>
-      <Card className="font-sans w-full max-w-sm lg:w-[412px] lg:h-[392px] shadow-xl">
+      <Card className="font-sans w-full shadow-xl px-10 py-5 min-w-[450px]">
         <div className="text-center">
           <CardHeader>
             <CardTitle className="text-3xl">
               <Logo />
             </CardTitle>
-            <CardDescription>Please Login in to your account</CardDescription>
+            <CardDescription className="text-[#B1B1B1]">Please Login in to your account</CardDescription>
         </CardHeader>
         </div>
 
         <form>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <label className="text-sm" htmlFor="username">
+              <label className="text-sm text-[#71717A]" htmlFor="username">
                 Username
               </label>
               <div className="flex items-center relative">
-                < User className="absolute left-3 " />
+                < User className="absolute left-3 text-[#B1B1B1] w-[16px]" />
                 <Input
                   id="username"
                   name="username"
                   type="text"
                   autoCapitalize="none"
-                  placeholder="username"
+                  placeholder="Enter your username"
                   required
-                  className="px-10"
+                  className="px-10 max-w-350  border-[#E4E4E7] focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
 
             </div>
 
             <div className="grid gap-2">
-              <label className="text-sm" htmlFor="password">
+              <label className="text-sm  text-[#71717A]" htmlFor="password">
                 Password
               </label>
               <div className="flex items-center relative">
-                <Lock className="absolute left-3" />
+                <Lock className="absolute left-3 text-[#B1B1B1] w-[16px]" />
                 <Input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="password"
+                placeholder="Enter your password"
                 required
-                className="px-10"
+                className="px-10 max-w-350 border-[#E4E4E7] focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
 
