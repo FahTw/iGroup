@@ -1,16 +1,16 @@
 import { Inter, Jua } from "next/font/google"
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
+import { Prompt } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] })
-const jua = Jua({ subsets: ["latin"], weight: "400" })
-
+const prompt = Prompt({ subsets: ["latin"], weight: "300" });
+// const jua = Jua({ subsets: ["latin"], weight: "400" })
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${prompt.className}`}>
         
         {/* Navbar ใช้ Jua แค่ Logo */}
         <header>

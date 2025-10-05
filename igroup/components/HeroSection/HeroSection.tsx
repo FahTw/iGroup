@@ -12,7 +12,7 @@ interface HeroSectionProps {
 const HeroSection = ({ title, subtitle, className }: HeroSectionProps) => {
   return (
     <div
-      className={`lg:w-full lg:h-[457px] flex flex-col items-center justify-center text-center gap-4 mb-10 ${className || ""}`}
+      className={`lg:w-full lg:h-[427px] flex flex-col items-center justify-center text-center gap-4 mb-10 ${className || ""}`}
     >
       <h1 className={`${jua.className} text-4xl font-bold text-blue-600`}>
         {title}
