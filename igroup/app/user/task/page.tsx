@@ -11,18 +11,7 @@ const page = () => {
 
       {/* Recent tasks list - shares same container width and spacing */}
       <TaskList />
-
-      {/* Two-column area for upcoming & recent activity */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="p-4">
-          <h2 className="text-lg font-semibold">Upcoming Deadline</h2>
-        </div>
-        <div className="p-4">
-          <h2 className="text-lg font-semibold">Recent Group Activity</h2>
-        </div>
-      </div>
-
     </div>
   );
 }
-export default page
+export default page;
