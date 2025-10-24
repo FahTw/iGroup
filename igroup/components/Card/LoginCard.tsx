@@ -40,7 +40,7 @@ const LoginCard = () => {
     const accessCookie = data.data.accessToken
     localStorage.setItem('accessToken', accessCookie)
 
-    router.push('/user/dashboard')
+    router.push('/dashboard')
   }
 
   return (
