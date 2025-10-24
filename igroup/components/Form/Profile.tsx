@@ -1,11 +1,36 @@
+"use client"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-const Profile = () => {
+import { useEffect, useState } from "react"
+
+type CardProps = {
+    profile: any
+}
+const Profile = ({ profile }: CardProps) => {
+    const [firstname, setFirstname] = useState('')
+    const [lastname, setLastname] = useState('')
+    const [email, setEmail] = useState('')
+    const [bio, setBio] = useState('')
+    const [username, setUsername] = useState('')
+    const [imagePath, setImagePath] = useState('')
+    const [password, setPassword] = useState('')
+    const getProfile = async () => {
+        if (!profile) return;
+        setFirstname(profile.Profile.first_name)
+        setLastname(profile.Profile.last_name)
+        setEmail(profile.Profile.email)
+        setBio(profile.Profile.bio)
+        setUsername(profile.username)
+        setImagePath(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${profile.Profile.imagePath}`)
+    }
+    useEffect(() => {
+        getProfile()
+    }, [])
     return (
         <div className="flex items-center justify-center gap-16">
             <div>
-                <Image src={"/Images/circle-user.png"} alt="Profile" width={200} height={200} className="mx-auto mb-4" />
+                <Image unoptimized src={imagePath || "/Images/circle-user.png"} alt="Profile" width={200} height={200} className="mx-auto mb-4 rounded-full aspect-square object-cover" />
                 <div className="text-center">
                     <label htmlFor="file" className="block font-medium mb-2">
                         Upload File
@@ -26,6 +51,8 @@ const Profile = () => {
                         <Input
                             id="firstname"
                             placeholder="Firstname"
+                            defaultValue={firstname}
+                            onChange={(e) => setFirstname(e.target.value)}
                             className="bg-white border-[#e4e4e7] text-[#1a1a1a] placeholder:text-[#b1b1b1]"
                         />
                     </div>
@@ -36,6 +63,8 @@ const Profile = () => {
                         <Input
                             id="lastname"
                             placeholder="Lastname"
+                            defaultValue={lastname}
+                            onChange={(e) => setLastname(e.target.value)}
                             className="bg-white border-[#e4e4e7] placeholder:text-[#b1b1b1]"
                         />
                     </div>
@@ -47,7 +76,7 @@ const Profile = () => {
                         <label htmlFor="username" className="font-medium block mb-">
                             Username
                         </label>
-                        <Input id="username" defaultValue="it66070032" className="bg-white border-[#e4e4e7] text-[#1a1a1a]" />
+                        <Input id="username" placeholder="Username" defaultValue={username} className="bg-white border-[#e4e4e7] text-[#1a1a1a]" disabled />
                     </div>
                     <div className="space-y-2">
                         <label htmlFor="email" className="font-medium block mb-">
@@ -56,8 +85,10 @@ const Profile = () => {
                         <Input
                             id="email"
                             type="email"
-                            defaultValue="it66070032@it.kmitl.ac.th"
+                            defaultValue={email}
                             className="bg-white border-[#e4e4e7] text-[#1a1a1a]"
+                            placeholder="Email"
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                 </div>
@@ -71,6 +102,7 @@ const Profile = () => {
                         id="new-password"
                         type="password"
                         placeholder="Password"
+                        onChange={(e) => setPassword(e.target.value)}
                         className="bg-white border-[#e4e4e7] text-[#1a1a1a] placeholder:text-[#b1b1b1]"
                     />
                 </div>
