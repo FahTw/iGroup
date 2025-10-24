@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Card,
   CardContent,
@@ -9,21 +11,41 @@ import {
 import { Input } from "@/components/ui/input"
 import Logo from "../Navbar/Logo"
 import { inter } from '@/lib/fonts'
-import { User, Phone, Mail, Lock } from "lucide-react"
-import {useState} from 'react'
+import { User, Lock } from "lucide-react"
+import { useState } from 'react'
+import { useRouter } from "next/navigation"
+import { Toaster, toast } from "sonner"
 
 const LoginCard = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    // TODO: handle login logic here
-    console.log("Form submitted")
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    
+    const refreshCookie = response.headers.get('Set-Cookie')
+    
+    const data = await response.json()
+    if (!data.success) return toast.error(data.message);
+
+    const accessCookie = data.data.accessToken
+    localStorage.setItem('accessToken', accessCookie)
+
+    router.push('/user/dashboard')
   }
 
   return (
     <div className={inter.className}>
+      <Toaster position="top-right" />
       <Card className="font-sans w-full shadow-xl px-10 py-5 min-w-[450px]">
         <div className="text-center">
           <CardHeader>
@@ -49,6 +71,7 @@ const LoginCard = () => {
                   autoCapitalize="none"
                   placeholder="Enter your username"
                   required
+                  onChange={(e) => setUsername(e.target.value)}
                   className="px-10 max-w-350  border-[#E4E4E7] focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
@@ -67,6 +90,7 @@ const LoginCard = () => {
                 type="password"
                 placeholder="Enter your password"
                 required
+                onChange={(e) => setPassword(e.target.value)}
                 className="px-10 max-w-350 border-[#E4E4E7] focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
@@ -76,7 +100,7 @@ const LoginCard = () => {
 
           <CardFooter className="flex flex-col items-center ">
             <button
-              type="submit"
+              onClick={handleSubmit}
               className="w-[13rem] rounded-md bg-blue-700 p-2 text-white hover:bg-blue-800 transition-colors"
             >
                เข้าสู่ระบบ
