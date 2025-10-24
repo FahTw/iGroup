@@ -10,8 +10,12 @@ import { Input } from "@/components/ui/input"
 import Logo from "../Navbar/Logo"
 import { inter } from '@/lib/fonts'
 import { User, Phone, Mail, Lock } from "lucide-react"
+import {useState} from 'react'
 
 const LoginCard = () => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // TODO: handle login logic here
