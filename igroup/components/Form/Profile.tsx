@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import { Toaster, toast } from "sonner"
 
 type CardProps = {
     profile: any
@@ -15,6 +16,7 @@ const Profile = ({ profile }: CardProps) => {
     const [username, setUsername] = useState('')
     const [imagePath, setImagePath] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     const getProfile = async () => {
         if (!profile) return;
         setFirstname(profile.Profile.first_name)
@@ -24,11 +26,18 @@ const Profile = ({ profile }: CardProps) => {
         setUsername(profile.username)
         setImagePath(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${profile.Profile.imagePath}`)
     }
+
+    const saveForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        toast.success("Save new profile successfully")
+    }
+
     useEffect(() => {
         getProfile()
     }, [])
     return (
         <div className="flex items-center justify-center gap-16">
+            <Toaster position="top-right" />
             <div>
                 <Image unoptimized src={imagePath || "/Images/circle-user.png"} alt="Profile" width={200} height={200} className="mx-auto mb-4 rounded-full aspect-square object-cover" />
                 <div className="text-center">
@@ -115,6 +124,7 @@ const Profile = ({ profile }: CardProps) => {
                         id="confirm-password"
                         type="password"
                         placeholder="Comfirm password"
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         className="bg-white border-[#e4e4e7] text-[#1a1a1a] placeholder:text-[#b1b1b1]"
                     />
                 </div>
@@ -122,7 +132,7 @@ const Profile = ({ profile }: CardProps) => {
                 {/* Submit Button */}
                 <div className="flex justify-center pt-4">
                     <Button
-                        type="submit"
+                        onClick={saveForm}
                         className="bg-[#0059ff] hover:bg-[#0059ff]/90 text-white px-16 py-3 rounded-md font-medium text-base"
                     >
                         บันทึก

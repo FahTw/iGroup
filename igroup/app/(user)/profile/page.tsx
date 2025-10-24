@@ -8,14 +8,14 @@ import { Toaster, toast } from "sonner";
 const Page = () => {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true); // 👈 เพิ่ม state โหลด
+  const [loading, setLoading] = useState(true);
 
   const getProfile = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (!accessToken) return router.push("/auth/login");
 
-      const res = await fetch("http://localhost:3000/profile", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,6 @@ const Page = () => {
         subtitle="แก้ไขข้อมูลส่วนตัว"
       />
       <Profile profile={profile} />
-      <Toaster />
     </div>
   );
 };
