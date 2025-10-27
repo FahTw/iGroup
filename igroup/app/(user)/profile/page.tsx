@@ -29,6 +29,12 @@ const Page = () => {
         return router.push("/auth/login");
       }
 
+      const imgProfile = await data.profile.Profile.imagePath;
+      console.log(imgProfile)
+      if (imgProfile == null) {
+        data.profile.Profile.imagePath = `uploads/profile/default.png`
+      }
+
       setProfile(data.profile);
     } catch (err) {
       toast.error("เกิดข้อผิดพลาดในการโหลดข้อมูล");
@@ -53,6 +59,7 @@ const Page = () => {
   // ✅ render เฉพาะเมื่อได้ profile แล้ว
   return (
     <div>
+      <Toaster position="top-right" />
       <HeroSection
         className="!h-[229px]"
         title="PROFILE"
