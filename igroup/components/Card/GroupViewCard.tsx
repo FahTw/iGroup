@@ -3,21 +3,79 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "../ui/button";
 import { Users } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Toaster, toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface Group {
-  id: number;
+  id: string; // note: backend sends UUIDs, not numbers
   name: string;
   desc: string;
   owner: string;
+  isOwner?: boolean;
+  isPending?: boolean;
 }
 
 const GroupViewCard = ({ groups = [] }: { groups?: Group[] }) => {
+  const router = useRouter();
+  const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
+
+  const joinGroup = async (groupId: string) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/join/${groupId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+      credentials: 'include',
+    });
+
+    const data = await res.json();
+    if (!data.success) return toast.error(data.message);
+    toast.success(data.message);
+    getStatus(); // refresh group status
+  };
+
+  const getStatus = async () => {
+    try {
+      const myGroupRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/mygroup`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        credentials: 'include',
+      });
+
+      const data = await myGroupRes.json();
+      if (!data.success) return;
+
+      // Extract group IDs and states
+      const userGroups = data.groups || [];
+
+      // Update displayed group list with ownership or pending state
+      const merged = groups.map((g) => {
+        const found = userGroups.find((ug: any) => ug.groupId === g.id);
+        return {
+          ...g,
+          isOwner: g.isOwner, // if you store it locally
+          isPending: found?.state === "PENDING",
+        };
+      });
+
+      setUpdatedGroups(merged);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    console.log("Groups:", groups);
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) return router.push("/auth/login");
+    getStatus();
   }, [groups]);
 
-  if (!groups.length) {
+  if (!updatedGroups.length) {
     return (
       <div className="max-w-4xl mx-auto text-center text-gray-500 py-10">
         ยังไม่มีกลุ่มให้แสดงผล
@@ -27,7 +85,8 @@ const GroupViewCard = ({ groups = [] }: { groups?: Group[] }) => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-4">
-      {groups.map((group) => (
+      <Toaster position="top-right" />
+      {updatedGroups.map((group) => (
         <Card
           key={group.id}
           className="p-6 bg-white border border-gray-200 hover:shadow-md transition-shadow"
@@ -49,9 +108,18 @@ const GroupViewCard = ({ groups = [] }: { groups?: Group[] }) => {
                 <Users className="w-4 h-4" />
                 <span>เจ้าของ {group.owner}</span>
               </div>
-              <Button className={`bg-blue-500 text-[#ffffff] hover:bg-blue-500/90`}>
-                  Join
-              </Button>
+
+              <button
+                className="bg-[#0059ff] text-white hover:bg-[#0059ff]/90 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => joinGroup(group.id)}
+                disabled={group.isOwner || group.isPending}
+              >
+                {group.isOwner
+                  ? "Owner"
+                  : group.isPending
+                  ? "Pending..."
+                  : "Join"}
+              </button>
             </div>
           </div>
         </Card>
