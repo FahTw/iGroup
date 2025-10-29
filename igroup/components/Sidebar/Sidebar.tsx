@@ -17,10 +17,10 @@ export default function Sidebar({ items, initialOpen = true }: SidebarProps) {
   const [open, setOpen] = useState(initialOpen)
 
   const defaults: NavItem[] = [
-    { label: 'Dashboard', href: '/user/dashboard' },
-    { label: 'Tasks', href: '/user/task' },
-    { label: 'Groups', href: '/user/managegroup' },
-    { label: 'Profile', href: '/user/profile' },
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Tasks', href: '/task' },
+    { label: 'Groups', href: '/managegroup' },
+    { label: 'Profile', href: '/profile' },
   ]
 
   const nav = items ?? defaults
