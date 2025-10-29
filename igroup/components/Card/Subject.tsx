@@ -86,7 +86,7 @@ const Subject = () => {
           <CardContent>
             <CardDescription>{s.desc}</CardDescription>
           </CardContent>
-          <Link href={`/subject/group/${s.name}`} className="block text-center text-blue-500 border">
+          <Link href={`/subject/${s.name}`} className="block text-center text-blue-500 border">
             กลุ่ม
           </Link>
         </Card>
