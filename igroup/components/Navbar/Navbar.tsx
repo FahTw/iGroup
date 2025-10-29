@@ -21,7 +21,7 @@ const Navbar = () => {
     { label: 'Profile', href: '/profile' },
     { label: 'Manage Group', href: '/managegroup' },
     // logout route
-    { label: 'Logout', href: '/ogin' },
+    { label: 'Logout', href: '/login' },
   ]
   return (
     <nav>
