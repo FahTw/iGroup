@@ -1,7 +1,9 @@
+"use client"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
 
 const projects = [
     {
@@ -26,6 +28,32 @@ const projects = [
     }
 ]
 const ManageGroupCard = () => {
+
+    const getGroups = async () => {
+        try {
+        const myGroupRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/mygroup`, {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+            credentials: 'include',
+        });
+
+        const data = await myGroupRes.json();
+        if (!data.success) return;
+
+        console.log(data)
+        } catch (err) {
+        console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        getGroups();
+    }, [])
+
+
     return (
         <div className="max-w-4xl mx-auto space-y-4">
             {projects.map((project) => (
