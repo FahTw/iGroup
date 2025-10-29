@@ -9,10 +9,10 @@ const page = () => {
                 subtitle="ระบบจัดการกลุ่ม"
             />
             <div className="flex justify-end max-w-4xl mx-auto mb-4 px-4">
-                <Button href="/creategroup">Create Group</Button>
+                <Button href="/create">Create Group</Button>
             </div>
 
-            < ManageGroupCard />
+            <ManageGroupCard />
         </div>
     )
 }
