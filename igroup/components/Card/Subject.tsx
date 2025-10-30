@@ -52,6 +52,7 @@ const Subject = () => {
         if (mounted) {
           setSubjects(list);
           setLoading(false);
+          console.log(list)
         }
       } catch (err: any) {
         // eslint-disable-next-line no-console
