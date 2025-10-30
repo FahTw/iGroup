@@ -5,46 +5,54 @@ import HeroSection from "@/components/HeroSection/HeroSection";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
-const SubjectGroupsPage = () => {
-  const { subjectName } = useParams() as { subjectName: string };
+const Page = () => {
+  const { subjectname } = useParams() as { subjectname: string };
   const [groups, setGroups] = useState<any[]>([]);
   const [subject, setSubject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!subjectName) return;
-    const accessToken = localStorage.getItem("accessToken");
-    console.log("Access Token:", accessToken);
-
-    const fetchData = async () => {
+    const fetchSubject = async () => {
       try {
-        const resSubject = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/subject/${subjectName}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
+        const accessToken = localStorage.getItem("accessToken");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/subject/${subjectname}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          },
         });
-        const dataSubject = await resSubject.json();
-        if (!dataSubject.success) throw new Error(dataSubject.message);
-        setSubject(dataSubject.subject);
-      } catch (err: any) {
-        setError(err.message);
+
+        const data = await res.json();
+        if (data.success) {
+          setSubject(data.subject);
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError("เกิดข้อผิดพลาด");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [subjectName]);
+    fetchSubject();
+  }, [subjectname]);
 
-  if (loading) return <p className="text-gray-500 text-center mt-10">Loading...</p>;
-  if (error) return <p className="text-red-600 text-center mt-10">{error}</p>;
-  if (!subject) return <p className="text-gray-500 text-center mt-10">Subject not found</p>;
+  if (loading) return <p className="text-center mt-10 text-gray-500">Loading...</p>;
+  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+  if (!subject) return <p className="text-center mt-10 text-gray-500">ไม่พบรายวิชา</p>;
 
   return (
     <div>
-      <HeroSection title={subject.name} subtitle="เลือกกลุ่มที่ต้องการเข้าร่วมหรือสร้างกลุ่ม" />
-      <GroupViewCard />
+      <HeroSection
+        title={subject.name}
+        subtitle="เลือกกลุ่มที่ต้องการเข้าร่วมหรือสร้างกลุ่ม"
+      />
+      <GroupViewCard groups={groups} />
     </div>
   );
 };
 
-export default SubjectGroupsPage;
+export default Page;

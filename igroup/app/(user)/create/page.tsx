@@ -24,59 +24,8 @@ export default function Page() {
     const [subject, setSubject] = useState<string>("");
     const [tag, setTag] = useState<string>("");
 
-    // Fetch subjects (and optionally tags) on mount
-    useEffect(() => {
-        const fetchSubjects = async () => {
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/subject`, {
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                });
-                if (!res.ok) throw new Error(`Failed to load subjects: ${res.status}`);
-                const data = await res.json();
-                if (data && Array.isArray(data.subjects)) {
-                    const names = data.subjects.map((s: any) => s.name || String(s.id));
-                    setSubjectList(names);
-                    if (!subject && names.length) setSubject(names[0]);
-                }
-            } catch (err: any) {
-                console.error("fetchSubjects error:", err);
-                toast.error(err?.message || "ไม่สามารถโหลดวิชาได้");
-            }
-        };
-
-        const fetchTags = async () => {
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tag`, {
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && Array.isArray(data.tags)) {
-                        const names = data.tags.map((t: any) => t.name || String(t.id));
-                        setTagList(names);
-                        if (!tag && names.length) setTag(names[0]);
-                    }
-                } else {
-                    // If tag endpoint not available, fall back silently
-                    console.debug("No tag endpoint or empty response");
-                }
-            } catch (err) {
-                console.debug("fetchTags skipped or failed", err);
-            }
-        };
-
-        fetchSubjects();
-        fetchTags();
-
-        return () => {
-            mounted = false;
-        };
-    }, []);
-
     const handleCreate = async () => {
-        if (!name.trim()) return toast.error("กรุณากรอกชื่อกลุ่ม");
+        // if (!name.trim()) return toast.error("กรุณากรอกชื่อกลุ่ม");
         setSubmitting(true);
 
         try {
@@ -109,6 +58,51 @@ export default function Page() {
             setSubmitting(false);
         }
     };
+    const fetchsubjects = async () => {
+        try {
+            const accessToken = localStorage.getItem("accessToken");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/subject`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+                },
+            });
+            const data = await res.json();
+            if (data.success && Array.isArray(data.subjects)) {
+                const names = data.subjects.map((s: any) => s.name);
+                setSubjectList(names);
+                if (names.length) setSubject(names[0]);
+            }
+        } catch (err) {
+            console.error("fetchsubjects error:", err);
+
+        }
+    }
+    const fetchtags = async () => {
+        try {
+            const accessToken = localStorage.getItem("accessToken");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tag`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+                },
+            });
+            const data = await res.json();
+            if (data.success && Array.isArray(data.tags)) {
+                const names = data.tags.map((t: any) => t.name);
+                setTagList(names);
+                if (names.length) setTag(names[0]);
+            }
+        } catch (err) {
+            console.error("fetchtags error:", err);
+        }
+    }
+    useEffect(() => {
+        fetchsubjects();
+        fetchtags();
+    }, []);
 
     return (
         <div>
@@ -176,10 +170,10 @@ export default function Page() {
                                     <SelectContent>
                                         {tagList.length
                                             ? tagList.map((t) => (
-                                                    <SelectItem key={t} value={t}>
-                                                        {t}
-                                                    </SelectItem>
-                                                ))
+                                                <SelectItem key={t} value={t}>
+                                                    {t}
+                                                </SelectItem>
+                                            ))
                                             : null}
                                     </SelectContent>
                                 </Select>
@@ -192,24 +186,24 @@ export default function Page() {
                             </div>
                         </div>
                     </div>
-
-                    <div className="lg:col-span-2">
-                        <h3 className="text-sm text-muted-foreground mb-2">ตัวอย่างแสดงกลุ่ม</h3>
-                        <Card className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <div className="text-blue-600 font-semibold">{name || "ชื่อกลุ่มตัวอย่าง"}</div>
-                                    <div className="text-sm text-muted-foreground">{detail || "คำอธิบายกลุ่มตัวอย่าง"}</div>
-                                </div>
-                                <div className="text-sm text-muted-foreground">{maxMember || 5} คน</div>
-                            </div>
-                            <div className="mt-4 flex gap-2">
-                                <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">{tag || "แท็ก"}</div>
-                                <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{subject || "วิชา"}</div>
-                            </div>
-                        </Card>
-                    </div>
                 </div>
+                <div className="lg:col-span-2">
+                    <h3 className="text-sm text-muted-foreground mb-2">ตัวอย่างแสดงกลุ่ม</h3>
+                    <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <div className="text-blue-600 font-semibold">{name || "ชื่อกลุ่มตัวอย่าง"}</div>
+                                <div className="text-sm text-muted-foreground">{detail || "คำอธิบายกลุ่มตัวอย่าง"}</div>
+                            </div>
+                            <div className="text-sm text-muted-foreground">{maxMember || 5} คน</div>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                            <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">{tag || "แท็ก"}</div>
+                            <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{subject || "วิชา"}</div>
+                        </div>
+                    </Card>
+                </div>
+
             </div>
         </div>
     );

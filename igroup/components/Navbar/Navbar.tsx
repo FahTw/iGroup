@@ -19,9 +19,10 @@ interface MenuItem {
 const Navbar = () => {
   const linkUrl: MenuItem[] = [
     { label: 'Profile', href: '/profile' },
+    { label: "Subject", href: '/subject' },
     { label: 'Manage Group', href: '/managegroup' },
     // logout route
-    { label: 'Logout', href: '/login' },
+    { label: 'Logout', href: '/auth/login' },
   ]
   return (
     <nav>

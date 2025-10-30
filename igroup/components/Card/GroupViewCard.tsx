@@ -20,6 +20,25 @@ const GroupViewCard = ({ groups = [] }: { groups?: Group[] }) => {
   const router = useRouter();
   const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
 
+  const fetchGroups = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUpdatedGroups(data.groups);
+      }
+    } catch (err) {
+      console.error("Error fetching groups:", err);
+    }
+  };
+
   const joinGroup = async (groupId: string) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/join/${groupId}`, {
       method: 'POST',
@@ -69,6 +88,7 @@ const GroupViewCard = ({ groups = [] }: { groups?: Group[] }) => {
     }
   };
 
+  
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) return router.push("/auth/login");
