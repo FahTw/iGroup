@@ -23,6 +23,7 @@ const page = () => {
   const [tasks, setTasks] = useState([]);
   const handleCreateTask = () => {
     // Handle task creation logic here
+    console.log(taskName)
     if (!taskName) {
       alert("กรุณาใส่ชื่องาน");
       return;
@@ -33,7 +34,7 @@ const page = () => {
       description: taskDescription,
     };
 
-    //setTasks((prevTasks) => [prevTasks, newTask]);
+    setTasks((prevTasks) => [newTask]);
 
     console.log("New Task Created:", newTask);
     console.log("All Tasks:", [...tasks, newTask]);
@@ -57,7 +58,7 @@ const page = () => {
         <TaskStat />
 
         {/* Task cards/list */}
-        <TaskList />
+        <TaskList tasks={tasks} />
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
@@ -67,11 +68,13 @@ const page = () => {
           <div className="space-y-4">
             <div>
               <label className="block mb-1 font-medium">ชื่องาน</label>
-              <Input type="text" placeholder="ป้อนชื่องาน" className="w-full" />
+              <Input type="text" placeholder="ป้อนชื่องาน" className="w-full" value={taskName}
+      onChange={(e) => setTaskName(e.target.value)} />
             </div>
             <div>
               <label className="block mb-1 font-medium">คำอธิบาย</label>
-              <Textarea placeholder="ป้อนคำอธิบายงาน" className="w-full" />
+              <Textarea placeholder="ป้อนคำอธิบายงาน" className="w-full" value={taskDescription}
+      onChange={(e) => setTaskDescription(e.target.value)} />
             </div>
           </div>
           <DialogFooter>

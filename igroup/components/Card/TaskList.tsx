@@ -1,18 +1,37 @@
 import { Card, CardContent, CardTitle, CardDescription, CardFooter } from "../ui/card";
-const TaskList = () => {
-    const tasks = [
-        { id: 1, title: "Task 1", description: "Description for Task 1" },
-        { id: 2, title: "Task 2", description: "Description for Task 2" },
-        { id: 3, title: "Task 3", description: "Description for Task 3" },
-    ];
+
+// 1. สร้าง Interface (ตัวแปร) สำหรับ Task (เพื่อใช้ใน TypeScript)
+interface Task {
+  id?: number; // ID อาจจะยังไม่มี ถ้ายังไม่เข้า DB
+  name: string;
+  description?: string;
+}
+
+// 2. รับ props ที่ชื่อ tasks (และกำหนดชนิดข้อมูลเป็น Task[])
+const TaskList = ({ tasks = [] }: { tasks: Task[] }) => {
+    
+    // 3. (ลบ) "const tasks = [...]" ที่ hard-code ไว้ออกไป
+
+    // 4. (แนะนำ) เพิ่มโค้ดเช็คว่า tasks ว่างเปล่าหรือไม่
+    if (tasks.length === 0) {
+        return (
+            <div className="w-full mt-6 text-center text-gray-500">
+                ยังไม่มีงาน... คลิก 'สร้างงาน' เพื่อเริ่มต้น
+            </div>
+        );
+    }
+
+    // 5. โค้ด .map() จะใช้ 'tasks' (prop) ที่รับมาโดยอัตโนมัติ
     return (
         <div className="w-full mt-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {tasks.map((task) => (
-                <Card key={task.id} className="mb-0 p-4 border w-full">
-                    <CardContent key={task.id} className="mb-2 p-0">
-                        <CardTitle className="py-2">{task.title}</CardTitle>
-                        <CardDescription>{task.description}</CardDescription>
+            {tasks.map((task, index) => (
+                // 6. ใช้ index เป็น key ชั่วคราว (เพราะ task ใหม่ยังไม่มี id)
+                <Card key={index} className="mb-0 p-4 border w-full">
+                    <CardContent className="mb-2 p-0">
+                        {/* 7. เปลี่ยน task.title เป็น task.name (เพราะ page.tsx ส่ง 'name') */}
+                        <CardTitle className="py-2">{task.name}</CardTitle>
+                        <CardDescription>{task.description || "ไม่มีคำอธิบาย"}</CardDescription>
                     </CardContent>
                     <CardFooter>
                         <div className="flex justify-between gap-4 text-sm">
@@ -21,7 +40,6 @@ const TaskList = () => {
                         </div>
                     </CardFooter>
                 </Card>
-
             ))}
           </div>
         </div>
