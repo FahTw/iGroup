@@ -17,8 +17,30 @@ import { useState } from "react";
 
 const page = () => {
   const [open, setOpen] = useState(false);
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+
+  const [tasks, setTasks] = useState([]);
   const handleCreateTask = () => {
     // Handle task creation logic here
+    if (!taskName) {
+      alert("กรุณาใส่ชื่องาน");
+      return;
+    }
+
+    const newTask = {
+      name: taskName,
+      description: taskDescription,
+    };
+
+    //setTasks((prevTasks) => [prevTasks, newTask]);
+
+    console.log("New Task Created:", newTask);
+    console.log("All Tasks:", [...tasks, newTask]);
+
+    setTaskName("");
+    setTaskDescription("");
+    setOpen(false);
   };
 
   return (
@@ -26,7 +48,9 @@ const page = () => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold">Task</h1>
-          <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm">สร้างงาน</button>
+          <button 
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm">สร้างงาน</button>
         </div>
 
         {/* Stats row */}
