@@ -17,16 +17,17 @@ interface Group {
   isPending?: boolean;
   isMember?: boolean;
 }
-
-const GroupViewCard = () => {
+interface GroupViewCardProps {
+  subjectName: string;
+}
+const GroupViewCard = ({ subjectName }: GroupViewCardProps) => {
   const router = useRouter();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
-
   const fetchGroups = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/subject?subject=${encodeURIComponent(subjectName)}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +141,7 @@ const GroupViewCard = () => {
       setLoading(false);
     };
     load();
-  }, []);
+  }, [subjectName]);
 
   if (loading)
     return (

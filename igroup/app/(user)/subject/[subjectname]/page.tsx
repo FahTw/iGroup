@@ -5,6 +5,7 @@ import HeroSection from "@/components/HeroSection/HeroSection";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
+
 const Page = () => {
   const { subjectname } = useParams() as { subjectname: string };
   const [groups, setGroups] = useState<any[]>([]);
@@ -50,7 +51,7 @@ const Page = () => {
         title={subject.name}
         subtitle="เลือกกลุ่มที่ต้องการเข้าร่วมหรือสร้างกลุ่ม"
       />
-      <GroupViewCard groups={groups} />
+      <GroupViewCard subjectName={subject.name} />
     </div>
   );
 };
