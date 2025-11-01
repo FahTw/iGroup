@@ -27,7 +27,7 @@ const TaskList = ({ tasks = [] }: { tasks: Task[] }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {tasks.map((task, index) => (
                 // 6. ใช้ index เป็น key ชั่วคราว (เพราะ task ใหม่ยังไม่มี id)
-                <Card key={index} className="mb-0 p-4 border w-full">
+                <Card key={task.id} className="mb-0 p-4 border w-full">
                     <CardContent className="mb-2 p-0">
                         {/* 7. เปลี่ยน task.title เป็น task.name (เพราะ page.tsx ส่ง 'name') */}
                         <CardTitle className="py-2">{task.name}</CardTitle>
