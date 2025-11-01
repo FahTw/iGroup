@@ -13,19 +13,25 @@ import {
 } from "@/components/ui/select";
 import { Toaster, toast } from "sonner";
 
+type Subject = { id: string; name: string };
+type Tag = { id: string; name: string };
+
 export default function Page() {
     const [name, setName] = useState("");
     const [detail, setDetail] = useState("");
     const [maxMember, setMaxMember] = useState<number>(5);
     const [submitting, setSubmitting] = useState(false);
 
-    const [subjectList, setSubjectList] = useState<string[]>([]);
-    const [tagList, setTagList] = useState<string[]>([]);
-    const [subject, setSubject] = useState<string>("");
-    const [tag, setTag] = useState<string>("");
+    const [subjectList, setSubjectList] = useState<Subject[]>([]);
+    const [tagList, setTagList] = useState<Tag[]>([]);
+    const [subject, setSubject] = useState<Subject | null>(null);
+    const [tag, setTag] = useState<Tag | null>(null);
 
     const handleCreate = async () => {
-        // if (!name.trim()) return toast.error("กรุณากรอกชื่อกลุ่ม");
+        if (!name.trim()) return toast.error("กรุณากรอกชื่อกลุ่ม");
+        if (!subject) return toast.error("กรุณาเลือกวิชา");
+        if (!tag) return toast.error("กรุณาเลือกแท็ก");
+
         setSubmitting(true);
 
         try {
@@ -37,7 +43,13 @@ export default function Page() {
                     ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
                 },
                 credentials: "include",
-                body: JSON.stringify({ name, detail, maxMember: Number(maxMember), subject, tag }),
+                body: JSON.stringify({
+                    name,
+                    desc: detail,
+                    quantity: Number(maxMember),
+                    subjectId: subject.id,
+                    tagId: tag.id,
+                }),
             });
 
             const data = await res.json().catch(() => ({ success: false, message: "Invalid response" }));
@@ -45,6 +57,7 @@ export default function Page() {
                 toast.error(data.message || "สร้างกลุ่มไม่สำเร็จ");
             } else {
                 toast.success("สร้างกลุ่มสำเร็จ");
+                // reset form
                 setName("");
                 setDetail("");
                 setMaxMember(5);
@@ -58,50 +71,48 @@ export default function Page() {
             setSubmitting(false);
         }
     };
-    const fetchsubjects = async () => {
+
+    const fetchSubjects = async () => {
         try {
             const accessToken = localStorage.getItem("accessToken");
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/subject`, {
-                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
                 },
             });
             const data = await res.json();
             if (data.success && Array.isArray(data.subjects)) {
-                const names = data.subjects.map((s: any) => s.name);
-                setSubjectList(names);
-                if (names.length) setSubject(names[0]);
+                setSubjectList(data.subjects);
+                if (data.subjects.length) setSubject(data.subjects[0]);
             }
         } catch (err) {
-            console.error("fetchsubjects error:", err);
-
+            console.error("fetchSubjects error:", err);
         }
-    }
-    const fetchtags = async () => {
+    };
+
+    const fetchTags = async () => {
         try {
             const accessToken = localStorage.getItem("accessToken");
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tag`, {
-                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
                 },
             });
             const data = await res.json();
             if (data.success && Array.isArray(data.tags)) {
-                const names = data.tags.map((t: any) => t.name);
-                setTagList(names);
-                if (names.length) setTag(names[0]);
+                setTagList(data.tags);
+                if (data.tags.length) setTag(data.tags[0]);
             }
         } catch (err) {
-            console.error("fetchtags error:", err);
+            console.error("fetchTags error:", err);
         }
-    }
+    };
+
     useEffect(() => {
-        fetchsubjects();
-        fetchtags();
+        fetchSubjects();
+        fetchTags();
     }, []);
 
     return (
@@ -145,14 +156,14 @@ export default function Page() {
 
                             <div className="md:col-span-1">
                                 <label className="block text-sm mb-1">Subject</label>
-                                <Select onValueChange={(v) => setSubject(v)}>
+                                <Select onValueChange={(id) => setSubject(subjectList.find((s) => s.id === id) || null)}>
                                     <SelectTrigger>
-                                        <SelectValue>{subject || (subjectList[0] ?? "เลือกวิชา")}</SelectValue>
+                                        <SelectValue>{subject?.name ?? "เลือกวิชา"}</SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
                                         {subjectList.map((s) => (
-                                            <SelectItem key={s} value={s}>
-                                                {s}
+                                            <SelectItem key={s.id} value={s.id}>
+                                                {s.name}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -163,18 +174,16 @@ export default function Page() {
                         <div className="mt-4 flex items-center gap-4">
                             <div className="w-40">
                                 <label className="block text-sm mb-1">Tag</label>
-                                <Select onValueChange={(v) => setTag(v)}>
+                                <Select onValueChange={(id) => setTag(tagList.find((t) => t.id === id) || null)}>
                                     <SelectTrigger>
-                                        <SelectValue>{tag || (tagList[0] ?? "เลือกแท็ก")}</SelectValue>
+                                        <SelectValue>{tag?.name ?? "เลือกแท็ก"}</SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {tagList.length
-                                            ? tagList.map((t) => (
-                                                <SelectItem key={t} value={t}>
-                                                    {t}
-                                                </SelectItem>
-                                            ))
-                                            : null}
+                                        {tagList.map((t) => (
+                                            <SelectItem key={t.id} value={t.id}>
+                                                {t.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -187,7 +196,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 py-50">
                     <h3 className="text-sm text-muted-foreground mb-2">ตัวอย่างแสดงกลุ่ม</h3>
                     <Card className="p-4">
                         <div className="flex items-center justify-between">
@@ -198,12 +207,11 @@ export default function Page() {
                             <div className="text-sm text-muted-foreground">{maxMember || 5} คน</div>
                         </div>
                         <div className="mt-4 flex gap-2">
-                            <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">{tag || "แท็ก"}</div>
-                            <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{subject || "วิชา"}</div>
+                            <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">{tag?.name ?? "แท็ก"}</div>
+                            <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{subject?.name ?? "วิชา"}</div>
                         </div>
                     </Card>
                 </div>
-
             </div>
         </div>
     );

@@ -13,15 +13,17 @@ type NavItem = {
 export default function Sidebar({ initialOpen = true }: { initialOpen?: boolean }) {
   const [open, setOpen] = useState(initialOpen);
   const pathname = usePathname();
-  const { groupname } = useParams();
 
-  const groupSafeName = groupname ? decodeURIComponent(groupname) : "default-group";
+  const { groupname } = useParams() as { groupname?: string };
+  const groupSafeName =
+    groupname && typeof groupname === "string" ? decodeURIComponent(groupname) : "default-group";
+
 
   const nav: NavItem[] = [
     { label: "Dashboard", href: `/${encodeURIComponent(groupSafeName)}` },
     { label: "Task", href: `/${encodeURIComponent(groupSafeName)}/task` },
     { label: "Archived", href: `/${encodeURIComponent(groupSafeName)}/archived` },
-    { label: "Users", href: `/${encodeURIComponent(groupSafeName)}/user` },
+    { label: "Users", href: `/${encodeURIComponent(groupSafeName)}/member` },
   ];
 
   return (
@@ -50,9 +52,8 @@ export default function Sidebar({ initialOpen = true }: { initialOpen?: boolean 
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 p-2 rounded ${
-                    open ? "justify-start" : "justify-center"
-                  } ${isActive ? "bg-blue-100 font-semibold" : "hover:bg-gray-100"}`}
+                  className={`flex items-center gap-3 p-2 rounded ${open ? "justify-start" : "justify-center"
+                    } ${isActive ? "bg-blue-100 font-semibold" : "hover:bg-gray-100"}`}
                 >
                   <span className="w-5 h-5 bg-gray-300 rounded" />
                   {open && <span className="text-sm">{item.label}</span>}

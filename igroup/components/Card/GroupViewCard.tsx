@@ -27,7 +27,7 @@ const GroupViewCard = ({ subjectName }: GroupViewCardProps) => {
   const fetchGroups = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/subject?subject=${encodeURIComponent(subjectName)}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -36,9 +36,13 @@ const GroupViewCard = ({ subjectName }: GroupViewCardProps) => {
         credentials: "include",
       });
 
+
       const data = await res.json();
       if (data.success && Array.isArray(data.groups)) {
-        const list = data.groups.map((g: any) => ({
+        const filtered = data.groups.filter((g: any) => g.subjectName.toLowerCase() === subjectName.toLowerCase());
+
+
+        const list = filtered.map((g: any) => ({
           ...g,
           tag: g.tag || g.tags?.[0]?.name || undefined,
           isOwner: !!g.isOwner,

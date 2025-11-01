@@ -55,7 +55,7 @@ const Navbar = () => {
 
     const loadProfile = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
