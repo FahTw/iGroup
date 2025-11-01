@@ -11,11 +11,13 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <div className="flex">
-        <Sidebar />
-        {/* Main content */}
-        <div className="flex-1 p-6">{children}</div>
-      </div>
+      <body>
+        <div className="flex">
+          <Sidebar />
+          {/* Main content */}
+          <div className="flex-1 p-6">{children}</div>
+        </div>
+      </body>
 
     </html>
   );
