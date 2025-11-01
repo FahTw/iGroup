@@ -25,7 +25,9 @@ const page = () => {
 
   // 4. ดึง groupId จาก URL
   const params = useParams();
-  const groupId = params.id as string; // (ถ้า path คือ /group/[id]/...)
+  const groupId = params.groupname as string; // (ถ้า path คือ /group/[id]/...)
+  console.log(groupId);
+  console.log(params);
 
   // 5. สร้างฟังก์ชันสำหรับดึง Task จาก DB
   const fetchTasks = async () => {
@@ -34,7 +36,7 @@ const page = () => {
     setIsLoading(true);
     try {
       // 6. เปลี่ยน URL ให้เรียก API ใหม่ (GET)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/${groupId}/tasks`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${groupId}/tasks`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -66,6 +68,7 @@ const handleCreateTask = async () => {
 
     try {
       // 9. เปลี่ยน URL ให้เรียก API ใหม่ (POST)
+      console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/${groupId}/tasks`);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/group/${groupId}/tasks`, {
         method: "POST",
         headers: {
