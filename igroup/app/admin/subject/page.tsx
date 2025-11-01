@@ -24,7 +24,7 @@ const page = () => {
                         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                     },
                     credentials: 'include',
-                    body: JSON.stringify({ name: name.trim(), code: code.trim(), detail: detail.trim() }),
+                    body: JSON.stringify({ name: name.trim(), code: code.trim(), desc: detail.trim() }),
                 })
                 const data = await res.json().catch(() => null)
                 if (res.ok && (data?.success ?? true)) {
