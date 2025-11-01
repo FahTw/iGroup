@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
+import { Toaster, toast } from "sonner";
 
 import { usePathname } from "next/navigation";
 
@@ -53,7 +54,7 @@ const Member = () => {
         getMembers();
     }, []);
 
-    const handleDelete = async (userId: string) => {
+    const handleDelete = async (userId: string, username: string) => {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/group/${groupName}/${userId}`,
             {
@@ -70,6 +71,7 @@ const Member = () => {
             setMembers((prevMembers) =>
                 prevMembers.filter((member) => member.userId !== userId)
             );
+            toast.success(`ลบสมาชิก ${username} สำเร็จ`);
         } else {
             console.error("Failed to delete member:", data.message);
         }
@@ -77,6 +79,7 @@ const Member = () => {
 
     return (
         <div className="p-6 max-w-5xl mx-auto">
+            <Toaster position="top-right" />
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">สมาชิกในกลุ่ม</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -97,7 +100,7 @@ const Member = () => {
 
 
                             <Button
-                                onClick={() => handleDelete(m.userId)}
+                                onClick={() => handleDelete(m.userId, m.username)}
                                 className="mt-4 w-full bg-red-600 text-white"
                             >
                                 ลบสมาชิก
